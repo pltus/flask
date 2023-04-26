@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        let socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        function updateColorSize() {
+            let r = document.getElementById("r").value || document.getElementById("r-number").value;
+            let g = document.getElementById("g").value || document.getElementById("g-number").value;
+            let b = document.getElementById("b").value || document.getElementById("b-number").value;
+            let area = document.getElementById("area").value || document.getElementById("area-number").value;
+
+            document.getElementById("r-number").value = r;
+            document.getElementById("g-number").value = g;
+            document.getElementById("b-number").value = b;
+            document.getElementById("area-number").value = area;
+
+            socket.emit('update_color_size', {'r': r, 'g': g, 'b': b, 'area': area});
+        }
+
+        function updateFromNumberInput() {
+            document.getElementById("r").value = document.getElementById("r-number").value;
+            document.getElementById("g").value = document.getElementById("g-number").value;
+            document.getElementById("b").value = document.getElementById("b-number").value;
+            document.getElementById("area").value = document.getElementById("area-number").value;
+
+            updateColorSize();
+        }
+    </script>
+</head>
+<body>
+    <h1>Control</h1>
+    <p>Red: <input type="range" id="r" min="0" max="255" value="255" onchange="updateColorSize()"> <input type="number" id="r-number" min="0" max="255" value="255" onchange="updateFromNumberInput()"></p>
+    <p>Green: <input type="range" id="g" min="0" max="255" value="255" onchange="updateColorSize()"> <input type="number" id="g-number" min="0" max="255" value="255" onchange="updateFromNumberInput()"></p>
+    <p>Blue: <input type="range" id="b" min="0" max="255" value="255" onchange="updateColorSize()"> <input type="number" id="b-number" min="0" max="255" value="255" onchange="updateFromNumberInput()"></p>
+    <p>Area: <input type="range" id="area" min="1" max="100" value="10" onchange="updateColorSize()"> <input type="number" id="area-number" min="1" max="100" value="10" onchange="updateFromNumberInput()"></p>
+</body>
+</html>

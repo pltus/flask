@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            position: absolute;
+            background-color: rgba({{ color_size.r }}, {{ color_size.g }}, {{ color_size.b }}, 1);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        let socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        function updateBoxSize(area) {
+            let box = document.getElementById("box");
+            let width = Math.sqrt(area / 100) * window.innerWidth;
+            let height = Math.sqrt(area / 100) * window.innerHeight;
+            box.style.width = width + "px";
+            box.style.height = height + "px";
+        }
+
+        window.addEventListener('resize', function() {
+            updateBoxSize({{ color_size.area }});
+        });
+
+        socket.on('color_size_updated', function(data) {
+            let box = document.getElementById("box");
+            box.style.backgroundColor = `rgba(${data.r}, ${data.g}, ${data.b}, 1)`;
+            updateBoxSize(data.area);
+        });
+    </script>
+</head>
+<body>
+    <div id="box" class="box"></div>
+    <script>
+        updateBoxSize({{ color_size.area }});
+    </script>
+</body>
+</html>
